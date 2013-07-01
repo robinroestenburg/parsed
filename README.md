@@ -26,7 +26,6 @@ Or install it yourself as:
 Say, you have a JSON file containing football divisions and their teams:
 
 ``` json
-# file: premier\_league.json
 {
   name: "Premier League",
   country: "England",
