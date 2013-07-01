@@ -28,17 +28,17 @@ Say, you have a JSON file containing football divisions and their teams:
 ``` json
 # file: premier\_league.json
 {
-  name: 'Premier League',
-  country: 'England',
+  name: "Premier League",
+  country: "England",
 
   teams: [
     {
-      name: 'Arsenal',
-      city: 'London'
+      name: "Arsenal",
+      city: "London"
     },
     {
-      name: 'Swansea City',
-      city: 'Swansea'
+      name: "Swansea City",
+      city: "Swansea"
     }
   ]
 }
@@ -54,7 +54,7 @@ what attributes and collections need to be parsed on those models:
 class League
   include Parsed::Parseable
 
-  attr_accessor :name, :county, :teams
+  attr_accessor :name, :country, :teams
 
   parses :name
   parses :country
