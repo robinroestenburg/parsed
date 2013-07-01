@@ -27,17 +27,17 @@ Say, you have a JSON file containing football divisions and their teams:
 
 ``` json
 {
-  name: "Premier League",
-  country: "England",
+  "name": "Premier League",
+  "country": "England",
 
-  teams: [
+  "teams": [
     {
-      name: "Arsenal",
-      city: "London"
+      "name": "Arsenal",
+      "city": "London"
     },
     {
-      name: "Swansea City",
-      city: "Swansea"
+      "name": "Swansea City",
+      "city": "Swansea"
     }
   ]
 }
