@@ -52,21 +52,15 @@ what attributes and collections need to be parsed on those models:
 # file: league.rb
 class League
   include Parsed::Parseable
-
   attr_accessor :name, :country, :teams
-
   parses :name, :country, :teams
-
 end
 
 # file: team.rb
 class Team
   include Parsed::Parseable
-
   attr_accessor :name, :city
-
   parses :name, :city
-
 end
 ```
 
@@ -75,15 +69,20 @@ Finally, you parse the JSON file as follows:
 ``` ruby
 require 'rubygems'
 require 'parsed'
+require_relative 'league'
+require_relative 'team'
 
 league = League.parse(File.read('premier_league.json'))
 
-p league.name  # => 'Premier League'
-p league.teams # =>
+p league.name
+# => "Premier League"
 
-arsenal = league.teams.first
+p league.teams
+# => [#<Team:0x007fcd18848428 @name="Arsenal", @city="London">,
+#     #<Team:0x007fcd188436d0 @name="Swansea City", @city="Swansea">]
 
-p arsenal.name # => 'Arsenal'
+p league.teams.first.name
+# => "Arsenal"
 ```
 
 ## Contributing
