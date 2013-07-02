@@ -2,20 +2,14 @@ require 'spec_helper'
 
 class League
   include Parsed::Parseable
-
   attr_accessor :name, :country, :teams
-
   parses :name, :teams
-
 end
 
 class Team
   include Parsed::Parseable
-
   attr_accessor :name, :city
-
   parses :name, :city
-
 end
 
 describe League do
@@ -69,12 +63,12 @@ describe League do
         end
 
         it 'returns an object for each element in the collection' do
-          subject.teams.size == 2
+          subject.teams.size.should == 2
         end
 
         it 'parses parseable objects inside the collection' do
-          subject.teams.first.name == 'Arsenal'
-          subject.teams.first.city == 'Swansea City'
+          subject.teams.first.name.should == 'Arsenal'
+          subject.teams.first.city.should == 'London'
         end
 
       end
@@ -96,6 +90,27 @@ describe League do
 
         it 'returns an empty collection' do
           subject.teams.should be_empty
+        end
+
+      end
+
+      describe 'with primitive elements' do
+
+        let(:premier_league) do
+          <<-EOS
+          {
+            "name": "Premier League",
+            "teams": ["Arsenal", "Swansea City"]
+          }
+          EOS
+        end
+
+        subject do
+          League.parse(premier_league)
+        end
+
+        it 'returns an element for each primitive in the collection' do
+          subject.teams.should == ['Arsenal', 'Swansea City']
         end
 
       end

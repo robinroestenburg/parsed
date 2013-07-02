@@ -71,8 +71,13 @@ module Parsed
         clazz = determine_collection_class(field)
         if clazz
           elements = parseable_json[field.to_sym] || []
+
           elements.map do |element|
-            clazz.parse(element.to_json)
+            if element.instance_of? Hash
+              clazz.parse(element.to_json)
+            else
+              element
+            end
           end
         else
           parseable_json[field.to_sym]
