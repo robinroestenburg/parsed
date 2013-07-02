@@ -36,7 +36,7 @@ module Parsed
         @parseable_json = JSON.parse(data, { :symbolize_names => true })
 
         instance = new
-        parse_instance(instance)
+        parse_fields(instance)
         instance
       end
 
@@ -58,40 +58,32 @@ module Parsed
         end
       end
 
-      def parses_collection(type)
-        parseable_collections << type
-      end
-
       private
-
-      def parse_instance(instance)
-        parse_fields(instance)
-        parse_collections(instance)
-      end
 
       def parse_fields(instance)
         parseable_fields.each do |field|
-          value = parseable_json[field.to_sym]
+          value = parse_field(field)
           instance.send("#{field}=".to_sym, value)
         end
       end
 
-      def parse_collections(instance)
-        parseable_collections.each do |collection|
-
-          clazz = Kernel.const_get(collection.to_s.singularize.camelize)
-          elements = parseable_json[collection] || []
-
-          parsed_elements = elements.map do |element|
+      def parse_field(field)
+        clazz = determine_collection_class(field)
+        if clazz
+          elements = parseable_json[field.to_sym] || []
+          elements.map do |element|
             clazz.parse(element.to_json)
           end
-
-         instance.send("#{collection}=".to_sym, parsed_elements)
+        else
+          parseable_json[field.to_sym]
         end
       end
 
+      def determine_collection_class(field)
+        field.to_s.singularize.camelize.constantize
+      rescue NameError => e
+        nil
+      end
     end
-
   end
-
 end

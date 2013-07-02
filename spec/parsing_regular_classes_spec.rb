@@ -5,8 +5,7 @@ class League
 
   attr_accessor :name, :country, :teams
 
-  parses :name
-  parses_collection :teams
+  parses :name, :teams
 
 end
 

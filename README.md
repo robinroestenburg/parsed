@@ -55,9 +55,7 @@ class League
 
   attr_accessor :name, :country, :teams
 
-  parses :name
-  parses :country
-  parses_collection :teams
+  parses :name, :country, :teams
 
 end
 
@@ -67,8 +65,7 @@ class Team
 
   attr_accessor :name, :city
 
-  parses :name
-  parses :city
+  parses :name, :city
 
 end
 ```
