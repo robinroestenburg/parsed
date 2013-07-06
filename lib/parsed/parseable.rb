@@ -1,5 +1,6 @@
 require 'json'
 require 'active_support/inflector'
+require_relative 'parses_json'
 
 module Parsed
 
@@ -11,17 +12,12 @@ module Parsed
 
     def self.included(base)
 
-      # Sets the instance variable names by symbol to object, thereby
-      # frustrating the efforts of the class's author to attempt to provide
-      # proper encapsulation. The variable did not have to exist prior to this
-      # call. If the instance variable name is passed as a string, that string
-      # is converted to a symbol.
+      # Sets the instance variable names by symbol to object. The variable did
+      # not have to exist prior to this call. If the instance variable name is
+      # passed as a string, that string is converted to a symbol.
 
-      base.instance_variable_set("@parseable_fields",      [])
-      base.instance_variable_set("@parseable_collections", [])
-      base.instance_variable_set("@parseable_json",        {})
-
-      # Adds to obj the instance methods from each module given as a parameter.
+      base.instance_variable_set(:@parseable_fields,      [])
+      base.instance_variable_set(:@parseable_collections, [])
 
       base.extend ClassMethods
     end
@@ -30,10 +26,12 @@ module Parsed
 
       attr_accessor :parseable_json,
                     :parseable_fields,
-                    :parseable_collections
+                    :parseable_collections,
+                    :parser
 
-      def parse(data)
-        @parseable_json = JSON.parse(data, { :symbolize_names => true })
+      def parse(data, parser = ParsesJson)
+        @parser = parser
+        @parseable_json = parser.parse(data)
 
         instance = new
         parse_fields(instance)
@@ -70,7 +68,7 @@ module Parsed
       def parse_field(field)
         clazz = determine_collection_class(field)
         if clazz
-          elements = parseable_json[field.to_sym] || []
+          elements = parser.parse_elements(parseable_json, field)
 
           elements.map do |element|
             if element.instance_of? Hash
@@ -80,7 +78,7 @@ module Parsed
             end
           end
         else
-          parseable_json[field.to_sym]
+          parser.parse_value(parseable_json, field)
         end
       end
 
