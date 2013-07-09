@@ -4,6 +4,8 @@ module Parsed
   class ParsesJson < Struct.new(:data)
 
     def self.parse(data)
+      return data if data.instance_of? Hash
+
       JSON.parse(data, { :symbolize_names => true })
     end
 
@@ -16,4 +18,5 @@ module Parsed
     end
 
   end
+
 end
