@@ -103,8 +103,7 @@ p superheroes.first.name
 
 **Sounds good. How about associations?**
 
-**TODO**
-
+**TODO** Write example.
 
 **You only have been working with text so far. How about parsing dates or
 integer values?**
@@ -135,8 +134,6 @@ end
 ```
 
 Fields that cannot be converted to the specific data types will be ignored.
-
-
 
 **Help! The fields in my configuration file have a different name than the
 attributes on the model.**
@@ -172,10 +169,13 @@ end
 
 * Provide configuration parameter to be able to log or raise errors when
   detecting a field that we are unable to parse.
-
-
-
-
+* Add logging.
+* Replace rspec integration tests by Cucumber features and hook them up to
+  Relishapp.
+* Implement DSL idea from
+  http://blog.joecorcoran.co.uk/2013/09/04/simple-pattern-ruby-dsl/
+* Write more documentation.
+* Implement different parsers: XML, YAML, TOML, etc.
 
 ## Contributing
 

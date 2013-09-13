@@ -8,6 +8,7 @@ module Parsed
 
     def self.included(base)
       base.instance_variable_set(:@parseable_attrs, {})
+      base.instance_variable_set(:@mapped_attrs, {})
       base.instance_variable_set(:@collection_class_cache, {})
       base.extend ClassMethods
     end
@@ -16,6 +17,7 @@ module Parsed
 
       attr_accessor :parseable_hash,
                     :parseable_attrs,
+                    :mapped_attrs,
                     :parser
 
       def parse(data, parser = ParsesJson)
@@ -39,12 +41,18 @@ module Parsed
       end
 
 
-      def text(attribute)
-        parseable_attrs.update({ attribute => :text })
+      def text(attribute_name, options = {})
+        mapped_attribute_name = options.fetch(:mapping, attribute_name)
+        mapped_attrs.update({ mapped_attribute_name.to_sym => attribute_name })
+
+        parseable_attrs.update({ attribute_name => :text })
       end
 
-      def integer(attribute)
-        parseable_attrs.update({ attribute => :integer })
+      def integer(attribute_name, options = {})
+        mapped_attribute_name = options.fetch(:mapping, attribute_name)
+        mapped_attrs.update({ mapped_attribute_name.to_sym => attribute_name })
+
+        parseable_attrs.update({ attribute_name => :integer })
       end
 
       def parseable(&block)
@@ -73,25 +81,30 @@ module Parsed
 
       def parse_fields(instance)
         parseable_hash.keys.each do |field|
-          if parseable_attrs.has_key?(field)
+
+          value = nil
+          if parseable_attrs.has_key?(mapped_attrs[field])
 
             if parseable_attrs[field] == :integer
-              parse_int(instance, field)
+              value = parse_int(instance, field)
             else # :text, default behaviour
               value = parse_field(field)
-              instance.send("#{field}=".to_sym, value)
             end
+            instance.send("#{mapped_attrs[field]}=".to_sym, value)
 
           elsif instance.respond_to?(field.to_sym)
+            # Allways parse as text otherwise..
+            mapped_attrs.update({ field.to_sym => field.to_sym })
             value = parse_field(field)
-            instance.send("#{field}=".to_sym, value)
+
+            instance.send("#{mapped_attrs[field]}=".to_sym, value)
           end
+
         end
       end
 
       def parse_int(instance, field)
-        value = Integer(parse_field(field))
-        instance.send("#{field}=".to_sym, value)
+        Integer(parse_field(field))
       rescue ArgumentError
         # do nothing
       end
