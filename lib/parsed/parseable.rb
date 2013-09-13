@@ -59,9 +59,11 @@ module Parsed
       private
 
       def parse_fields(instance)
-        parseable_fields.each do |field|
-          value = parse_field(field)
-          instance.send("#{field}=".to_sym, value)
+        parseable_hash.keys.each do |field|
+          if parseable_fields.include?(field) || instance.respond_to?(field.to_sym)
+            value = parse_field(field)
+            instance.send("#{field}=".to_sym, value)
+          end
         end
       end
 

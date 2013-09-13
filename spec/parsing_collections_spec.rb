@@ -2,9 +2,7 @@ require 'spec_helper'
 
 class Superhero
   include Parsed::Parseable
-
   attr_accessor :name
-
 end
 
 describe 'parsing a collection of elements' do
@@ -31,8 +29,12 @@ describe 'parsing a collection of elements' do
     subject.size.should == 5
   end
 
+  it 'creates a Superhero instance for each of the elements' do
+    subject.first.should be_a Superhero
+  end
+
   it 'parses the individual elements of the collection' do
-    subject.first.name = 'Batman'
+    subject.first.name.should == 'Batman'
   end
 
 end
