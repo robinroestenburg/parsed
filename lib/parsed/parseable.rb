@@ -7,7 +7,7 @@ module Parsed
   module Parseable
 
     def self.included(base)
-      base.instance_variable_set(:@parseable_fields, [])
+      base.instance_variable_set(:@parseable_attrs, {})
       base.instance_variable_set(:@collection_class_cache, {})
       base.extend ClassMethods
     end
@@ -15,7 +15,7 @@ module Parsed
     module ClassMethods
 
       attr_accessor :parseable_hash,
-                    :parseable_fields,
+                    :parseable_attrs,
                     :parser
 
       def parse(data, parser = ParsesJson)
@@ -38,6 +38,19 @@ module Parsed
         end
       end
 
+
+      def text(attribute)
+        parseable_attrs.update({ attribute => :text })
+      end
+
+      def integer(attribute)
+        parseable_attrs.update({ attribute => :integer })
+      end
+
+      def parseable(&block)
+        instance_eval(&block)
+      end
+
       # Public: Registers attributes that are to be parsed.
       #
       # attributes - The fields to be parsed
@@ -47,12 +60,12 @@ module Parsed
       #   class Foo
       #     include Parsed::Parseable
       #     attr_accessor :foo, :bar, :baz
-      #     parsed :foo, :bar, :baz
+      #     parses :foo, :bar, :baz
       #   end
       #
       def parses(*attributes)
-        attributes.each do |attributes|
-          parseable_fields << attributes
+        attributes.each do |attribute|
+          text attribute
         end
       end
 
@@ -60,11 +73,27 @@ module Parsed
 
       def parse_fields(instance)
         parseable_hash.keys.each do |field|
-          if parseable_fields.include?(field) || instance.respond_to?(field.to_sym)
+          if parseable_attrs.has_key?(field)
+
+            if parseable_attrs[field] == :integer
+              parse_int(instance, field)
+            else # :text, default behaviour
+              value = parse_field(field)
+              instance.send("#{field}=".to_sym, value)
+            end
+
+          elsif instance.respond_to?(field.to_sym)
             value = parse_field(field)
             instance.send("#{field}=".to_sym, value)
           end
         end
+      end
+
+      def parse_int(instance, field)
+        value = Integer(parse_field(field))
+        instance.send("#{field}=".to_sym, value)
+      rescue ArgumentError
+        # do nothing
       end
 
       def parse_field(field)
