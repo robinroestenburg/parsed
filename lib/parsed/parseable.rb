@@ -22,9 +22,20 @@ module Parsed
         @parser = parser
         @parseable_hash = parser.parse(data)
 
-        instance = new
-        parse_fields(instance)
-        instance
+        if @parseable_hash.is_a? Array
+
+          elements = @parseable_hash
+          elements.map do |element|
+            @parseable_hash = element
+            instance = new
+            parse_fields(instance)
+            instance
+          end
+        else
+          instance = new
+          parse_fields(instance)
+          instance
+        end
       end
 
       # Public: Registers attributes that are to be parsed.
