@@ -1,6 +1,8 @@
 require 'json'
 
 module Parsed
+
+  # Parses a piece of JSON data into a hash structure.
   class ParsesJson < Struct.new(:data)
 
     def self.parse(data)
@@ -17,6 +19,6 @@ module Parsed
       data[field.to_sym] || []
     end
 
-  end
+  end # class ParsesJson
 
-end
+end # module Parsed

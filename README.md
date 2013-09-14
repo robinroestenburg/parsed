@@ -26,10 +26,10 @@ Or install it yourself as:
 Say, you have the following configuration file containing your favorite
 superhero:
 
-``` json
-# superhero.json
-{ "name": "Spider-Man" }
-```
+    ``` json
+    # superhero.json
+    { "name": "Spider-Man" }
+    ```
 
 In order to load this data into your program, you need to add the
 `Parsed::Parseable` module to the class you want to load the data:
@@ -42,11 +42,21 @@ class Superhero
 end
 ```
 
-Sending the `parse`-method with the configuration as a parameter to the
-`Superhero` class will return a `Superhero` instance:
+Furthermore, you need to create a specific parser that you can use in your
+application. So, if we want to create a parser for our `Superhero` class we
+would build that parser like this:
 
 ``` ruby
-superhero = Superhero.parse(File.read('superhero.json'))
+SuperheroParser = Parseable.build do |b|
+  b.root_class = Superhero
+end
+```
+
+Sending the `parse`-method with the configuration as a parameter to the
+`SuperheroParser` class will return a `Superhero` instance:
+
+``` ruby
+superhero = SuperheroParser.parse(File.read('superhero.json'))
 
 p superhero.name
 # => "Spider-Man"
@@ -63,7 +73,7 @@ example:
 ```
 
 ``` ruby
-superhero = Superhero.parse(File.read('superhero.json'))
+superhero = SuperheroParser.parse(File.read('superhero.json'))
 
 p superhero.power
 # => NoMethodError: undefined method `power' for #<Superhero:0x007ff2120f7920>
@@ -92,7 +102,7 @@ Sending the `parse`-method with the configuration as a parameter to the
 `Superhero` class will return an array of `Superhero` instances:
 
 ``` ruby
-superheroes = Superhero.parse(File.read('superheroes.json'))
+superheroes = SuperheroParser.parse(File.read('superheroes.json'))
 
 p superheroes.size
 # => 4
@@ -165,6 +175,49 @@ class Superhero
 end
 ```
 
+**There are fields that I don't want to load into my models, is it possible to
+skip these?**
+
+Yes, you can use the `skip!` method inside the `parseable` blocks for this.
+Let's take our original json file again:
+
+``` json
+# superhero.json
+{
+  "name": "Thor",
+  "strength": "1200"
+}
+```
+
+This time, we don't want to load the `strength` field because we are retrieving
+that field from the Superhero Database Webservice by Acme Inc. Explicitly state
+that the field is to be skipped using the `skip!` method:
+
+``` ruby
+# superhero.rb
+class Superhero
+  include Parsed::Parseable
+
+  attr_accessor :name, :strength
+
+  parseable do
+    text :name
+    skip! :strength
+  end
+
+end
+```
+
+Now if we look at the `Superhero` instance after parsing the configuration:
+
+``` ruby
+superhero = SuperheroParser.parse(File.read('superhero.json'))
+
+p superhero.strength
+# => nil
+```
+
+
 ## Roadmap
 
 * Provide configuration parameter to be able to log or raise errors when
@@ -172,10 +225,19 @@ end
 * Add logging.
 * Replace rspec integration tests by Cucumber features and hook them up to
   Relishapp.
-* Implement DSL idea from
-  http://blog.joecorcoran.co.uk/2013/09/04/simple-pattern-ruby-dsl/
+* ~~Implement DSL idea from
+  http://blog.joecorcoran.co.uk/2013/09/04/simple-pattern-ruby-dsl/~~
 * Write more documentation.
 * Implement different parsers: XML, YAML, TOML, etc.
+* ~~Try to do something like this:
+
+    ParsesSuperhero = Parseable.build do |b|
+      b.class Superhero
+    end
+    ParsesArticle.parse
+
+  instead of the Superhero.parse.~~
+
 
 ## Contributing
 
