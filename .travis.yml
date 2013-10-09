@@ -8,5 +8,5 @@ rvm:
   - jruby-head
   - rbx-19mode
 env:
-  - JRUBY_OPTS="--server -Dcext.enabled=true -Xcompile.invokedynamic=false"
+  - JRUBY_OPTS="--server -Xcext.enabled=true -Xcompile.invokedynamic=false"
 script: bundle exec rspec spec
