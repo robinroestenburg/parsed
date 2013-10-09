@@ -7,4 +7,6 @@ rvm:
   - jruby-19mode
   - jruby-head
   - rbx-19mode
+env:
+  - JRUBY_OPTS="--server -Dcext.enabled=true -Xcompile.invokedynamic=false"
 script: bundle exec rspec spec
