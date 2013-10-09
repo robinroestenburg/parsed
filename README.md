@@ -1,6 +1,6 @@
 # Parsed
 
-[![Build Status](https://travis-ci.org/robinroestenburg/parsef.png)](https://travis-ci.org/robinroestenburg/parsed)
+[![Build Status](https://travis-ci.org/robinroestenburg/parsed.png)](https://travis-ci.org/robinroestenburg/parsed)
 
 Parses files into basic Ruby objects. Currently only the JSON format is
 supported. Future versions are planned to support XML, Haml and TOML.
