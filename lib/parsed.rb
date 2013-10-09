@@ -1,4 +1,5 @@
 require 'json'
+require 'delegate'
 require 'active_support/inflector'
 
 module Parsed

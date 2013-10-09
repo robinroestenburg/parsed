@@ -27,5 +27,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'redcarpet'
   gem.add_development_dependency 'github-markup'
 
-  gem.add_runtime_dependency 'activesupport'
+  gem.add_runtime_dependency 'activesupport', '3.2.14'
 end
