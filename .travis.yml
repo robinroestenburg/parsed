@@ -3,12 +3,16 @@ rvm:
   - 1.9.2
   - 1.9.3
   - 2.0.0
-  - ruby-head
   - jruby-19mode
   - rbx-19mode
+  - ruby-head
+  - ruby-2.1.0-preview1
+  - jruby-head
 
 script: bundle exec rspec spec
 
 matrix:
   allow_failures:
     - rvm: ruby-head
+    - rvm: ruby-2.1.0-preview1
+    - rvm: jruby-head
