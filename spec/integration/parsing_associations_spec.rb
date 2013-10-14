@@ -5,10 +5,6 @@ module ParsingAssociations
   class Team
     include Parsed::Parseable
     attr_accessor :name, :superheroes
-
-    parseable do
-      text :name
-    end
   end
 
   class Superhero
